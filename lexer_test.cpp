@@ -12,7 +12,7 @@ int main(int argc, const char *argv[]) {
 	for (const Token &token : tests) {
 		Token current_token = lexer.nextToken();
 		ASSERT_EQ(token.literal, current_token.literal,
-			  std::string{std::string{"Test literal for "} +
+			  std::string{std::string{"Test literal: "} +
 				      std::string{token.literal}});
 	}
 
