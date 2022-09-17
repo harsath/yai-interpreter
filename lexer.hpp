@@ -1,6 +1,7 @@
 #pragma once
 #include "token.hpp"
 #include <string>
+#include <iostream>
 
 using TokenType = std::string;
 
@@ -59,20 +60,28 @@ Token Lexer::nextToken() {
 	switch (this->ch) {
 	case '=':
 		tok = Token{ASSIGN, std::string{this->ch}};
+		break;
 	case ';':
 		tok = Token{SEMICOLON, std::string{this->ch}};
+		break;
 	case '(':
 		tok = Token{LPAREN, std::string{this->ch}};
+		break;
 	case ')':
 		tok = Token{RPAREN, std::string{this->ch}};
+		break;
 	case ',':
 		tok = Token{COMMA, std::string{this->ch}};
+		break;
 	case '+':
 		tok = Token{PLUS, std::string{this->ch}};
+		break;
 	case '{':
 		tok = Token{LBRACE, std::string{this->ch}};
+		break;
 	case '}':
 		tok = Token{RBRACE, std::string{this->ch}};
+		break;
 	case 0:
 		tok = Token{"", EOF_MARK};
 	}
