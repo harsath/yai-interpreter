@@ -1,9 +1,14 @@
 #pragma once
 #include "token.hpp"
-#include <string>
 #include <iostream>
+#include <string>
 
+namespace Lex {
 using TokenType = std::string;
+
+bool isLetter(char);
+bool isDigit(char);
+std::string lookup_ident(const std::string &);
 
 class Token {
       public:
@@ -19,7 +24,7 @@ Token::Token(TokenType input_type, std::string input_literal)
     : type{std::move(input_type)}, literal{std::move(input_literal)} {}
 
 Token::Token(const Token &input_token)
-    : type{input_token.type}, literal{input_token.type} {}
+    : type{input_token.type}, literal{input_token.literal} {}
 
 Token::Token() {}
 
@@ -39,6 +44,11 @@ class Lexer {
 	Lexer(std::string input_string);
 	void readChar();
 	Token nextToken();
+
+      private:
+	std::string readIdentifier();
+	std::string readNumber();
+	void skipWhitespace();
 };
 
 Lexer::Lexer(std::string input_string)
@@ -57,34 +67,96 @@ void Lexer::readChar() {
 
 Token Lexer::nextToken() {
 	Token tok;
+	this->skipWhitespace();
 	switch (this->ch) {
 	case '=':
-		tok = Token{ASSIGN, std::string{this->ch}};
+		tok = Token{Tok::ASSIGN, std::string{this->ch}};
+		this->readChar();
 		break;
 	case ';':
-		tok = Token{SEMICOLON, std::string{this->ch}};
+		tok = Token{Tok::SEMICOLON, std::string{this->ch}};
+		this->readChar();
 		break;
 	case '(':
-		tok = Token{LPAREN, std::string{this->ch}};
+		tok = Token{Tok::LPAREN, std::string{this->ch}};
+		this->readChar();
 		break;
 	case ')':
-		tok = Token{RPAREN, std::string{this->ch}};
+		tok = Token{Tok::RPAREN, std::string{this->ch}};
+		this->readChar();
 		break;
 	case ',':
-		tok = Token{COMMA, std::string{this->ch}};
+		tok = Token{Tok::COMMA, std::string{this->ch}};
+		this->readChar();
 		break;
 	case '+':
-		tok = Token{PLUS, std::string{this->ch}};
+		tok = Token{Tok::PLUS, std::string{this->ch}};
+		this->readChar();
 		break;
 	case '{':
-		tok = Token{LBRACE, std::string{this->ch}};
+		tok = Token{Tok::LBRACE, std::string{this->ch}};
+		this->readChar();
 		break;
 	case '}':
-		tok = Token{RBRACE, std::string{this->ch}};
+		tok = Token{Tok::RBRACE, std::string{this->ch}};
+		this->readChar();
 		break;
 	case 0:
-		tok = Token{"", EOF_MARK};
+		tok = Token{Tok::EOF_MARK, ""};
+		this->readChar();
+		break;
+	default:
+		if (isLetter(this->ch)) {
+			std::string literal = this->readIdentifier();
+			std::string type = lookup_ident(literal);
+			tok = Token{type, literal};
+		} else if (isDigit(this->ch)) {
+			std::string literal = this->readNumber();
+			std::string type = Tok::INT;
+			tok = Token{type, literal};
+		} else {
+			tok = Token{Tok::ILLEGAL, "ILLEGAL"};
+		}
 	}
-	this->readChar();
 	return tok;
 }
+
+std::string Lexer::readIdentifier() {
+	std::string returner{""};
+	while (isLetter(this->ch)) {
+		returner += this->ch;
+		this->readChar();
+	}
+	return returner;
+}
+
+std::string Lexer::readNumber() {
+	std::string returner = "";
+	while (isDigit(this->ch)) {
+		returner += this->ch;
+		this->readChar();
+	}
+	return returner;
+}
+
+void Lexer::skipWhitespace() {
+	while ((this->ch == ' ') || (this->ch == '\t') || (this->ch == '\n') ||
+	       (this->ch == '\r')) {
+		this->readChar();
+	}
+}
+
+bool isLetter(char x) {
+	return (('a' <= x && x <= 'z') || ('A' <= x && x <= 'Z') || (x == '_'));
+}
+
+bool isDigit(char x) { return (('0' <= x) && ('9' >= x)); }
+
+std::string lookup_ident(const std::string &ident) {
+	if (Tok::keywords.find(ident) == Tok::keywords.end()) {
+		return Tok::IDENT;
+	}
+	return Tok::keywords.at(ident);
+}
+
+} // namespace Lex

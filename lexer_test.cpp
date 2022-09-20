@@ -2,19 +2,75 @@
 #include "test_helper.hpp"
 #include <vector>
 
+void test_one();
+void test_two();
+
 int main(int argc, const char *argv[]) {
+	test_one();
+	test_two();
+
+	return 0;
+}
+
+void test_one() {
+	using namespace Lex;
 	std::string input = "=+(){},;";
 	std::vector<Token> tests = {
-	    Token{ASSIGN, "="}, Token{PLUS, "+"},      Token{LPAREN, "("},
-	    Token{RPAREN, ")"}, Token{LBRACE, "{"},    Token{RBRACE, "}"},
-	    Token{COMMA, ","},	Token{SEMICOLON, ";"}, Token{EOF_MARK, ""}};
+	    Token{Tok::ASSIGN, "="}, Token{Tok::PLUS, "+"},
+	    Token{Tok::LPAREN, "("}, Token{Tok::RPAREN, ")"},
+	    Token{Tok::LBRACE, "{"}, Token{Tok::RBRACE, "}"},
+	    Token{Tok::COMMA, ","},  Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::EOF_MARK, ""}};
 	Lexer lexer = Lexer(input);
 	for (const Token &token : tests) {
 		Token current_token = lexer.nextToken();
 		ASSERT_EQ(token.literal, current_token.literal,
-			  std::string{std::string{"Test literal: "} +
+			  std::string{std::string{"Test 1 literal: "} +
 				      std::string{token.literal}});
+		ASSERT_EQ(token.type, current_token.type,
+			  std::string{std::string{"Test 1 type: "} +
+				      std::string{token.type}});
 	}
+}
 
-	return 0;
+void test_two() {
+	using namespace Lex;
+	std::string input = R""""(
+		let five = 5;
+		let ten = 10;
+		let add = fn(x, y) {
+			x + y;
+		};
+		let result = add(five, ten);
+		)"""";
+	Lexer lexer(input);
+	std::vector<Token> tests = {
+	    Token{Tok::LET, "let"},	Token{Tok::IDENT, "five"},
+	    Token{Tok::ASSIGN, "="},	Token{Tok::INT, "5"},
+	    Token{Tok::SEMICOLON, ";"}, Token{Tok::LET, "let"},
+	    Token{Tok::IDENT, "ten"},	Token{Tok::ASSIGN, "="},
+	    Token{Tok::INT, "10"},	Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::LET, "let"},	Token{Tok::IDENT, "add"},
+	    Token{Tok::ASSIGN, "="},	Token{Tok::FUNCTION, "fn"},
+	    Token{Tok::LPAREN, "("},	Token{Tok::IDENT, "x"},
+	    Token{Tok::COMMA, ","},	Token{Tok::IDENT, "y"},
+	    Token{Tok::RPAREN, ")"},	Token{Tok::LBRACE, "{"},
+	    Token{Tok::IDENT, "x"},	Token{Tok::PLUS, "+"},
+	    Token{Tok::IDENT, "y"},	Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::RBRACE, "}"},	Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::LET, "let"},	Token{Tok::IDENT, "result"},
+	    Token{Tok::ASSIGN, "="},	Token{Tok::IDENT, "add"},
+	    Token{Tok::LPAREN, "("},	Token{Tok::IDENT, "five"},
+	    Token{Tok::COMMA, ","},	Token{Tok::IDENT, "ten"},
+	    Token{Tok::RPAREN, ")"},	Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::EOF_MARK, ""}};
+	for (const Token &token : tests) {
+		Token current_token = lexer.nextToken();
+		ASSERT_EQ(token.literal, current_token.literal,
+			  std::string{std::string{"Test 2 literal: "} +
+				      std::string{token.literal}});
+		ASSERT_EQ(token.type, current_token.type,
+			  std::string{std::string{"Test 2 type: "} +
+				      std::string{token.type}});
+	}
 }
