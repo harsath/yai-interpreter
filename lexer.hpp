@@ -93,6 +93,30 @@ Token Lexer::nextToken() {
 		tok = Token{Tok::PLUS, std::string{this->ch}};
 		this->readChar();
 		break;
+	case '-':
+		tok = Token{Tok::MINUS, std::string{this->ch}};
+		this->readChar();
+		break;
+	case '!':
+		tok = Token{Tok::BANG, std::string{this->ch}};
+		this->readChar();
+		break;
+	case '*':
+		tok = Token{Tok::ASTERISK, std::string{this->ch}};
+		this->readChar();
+		break;
+	case '/':
+		tok = Token{Tok::SLASH, std::string{this->ch}};
+		this->readChar();
+		break;
+	case '<':
+		tok = Token{Tok::LT, std::string{this->ch}};
+		this->readChar();
+		break;
+	case '>':
+		tok = Token{Tok::GT, std::string{this->ch}};
+		this->readChar();
+		break;
 	case '{':
 		tok = Token{Tok::LBRACE, std::string{this->ch}};
 		this->readChar();

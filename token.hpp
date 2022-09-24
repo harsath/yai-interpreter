@@ -13,6 +13,12 @@ const std::string INT = "INT";
 // Operators
 const std::string ASSIGN = "=";
 const std::string PLUS = "+";
+const std::string MINUS = "-";
+const std::string BANG = "!";
+const std::string ASTERISK = "*";
+const std::string SLASH = "/";
+const std::string LT = "<";
+const std::string GT = ">";
 
 // Delimiters
 const std::string COMMA = ",";

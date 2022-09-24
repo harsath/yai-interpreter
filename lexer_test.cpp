@@ -4,10 +4,12 @@
 
 void test_one();
 void test_two();
+void test_three();
 
 int main(int argc, const char *argv[]) {
 	test_one();
 	test_two();
+	test_three();
 
 	return 0;
 }
@@ -71,6 +73,34 @@ void test_two() {
 				      std::string{token.literal}});
 		ASSERT_EQ(token.type, current_token.type,
 			  std::string{std::string{"Test 2 type: "} +
+				      std::string{token.type}});
+	}
+}
+
+void test_three() {
+	using namespace Lex;
+	std::string input = R""""(
+	let ten = 10;
+	!-/*5;
+	5 < 10 > 5;
+	)"""";
+	std::vector<Token> tests = {
+	    Token{Tok::LET, "let"},	Token{Tok::IDENT, "ten"},
+	    Token{Tok::ASSIGN, "="},	Token{Tok::INT, "10"},
+	    Token{Tok::SEMICOLON, ";"}, Token{Tok::BANG, "!"},
+	    Token{Tok::MINUS, "-"},	Token{Tok::SLASH, "/"},
+	    Token{Tok::ASTERISK, "*"},	Token{Tok::INT, "5"},
+	    Token{Tok::SEMICOLON, ";"}, Token{Tok::INT, "5"},
+	    Token{Tok::LT, "<"},	Token{Tok::INT, "10"},
+	    Token{Tok::GT, ">"},	Token{Tok::INT, "5"}};
+	Lexer lexer(input);
+	for (const Token &token : tests) {
+		Token current_token = lexer.nextToken();
+		ASSERT_EQ(token.literal, current_token.literal,
+			  std::string{std::string{"Test 3 literal: "} +
+				      std::string{token.literal}});
+		ASSERT_EQ(token.type, current_token.type,
+			  std::string{std::string{"Test 3 type: "} +
 				      std::string{token.type}});
 	}
 }
