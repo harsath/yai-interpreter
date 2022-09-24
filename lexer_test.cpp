@@ -5,11 +5,13 @@
 void test_one();
 void test_two();
 void test_three();
+void test_four();
 
 int main(int argc, const char *argv[]) {
 	test_one();
 	test_two();
 	test_three();
+	test_four();
 
 	return 0;
 }
@@ -92,7 +94,7 @@ void test_three() {
 	    Token{Tok::ASTERISK, "*"},	Token{Tok::INT, "5"},
 	    Token{Tok::SEMICOLON, ";"}, Token{Tok::INT, "5"},
 	    Token{Tok::LT, "<"},	Token{Tok::INT, "10"},
-	    Token{Tok::GT, ">"},	Token{Tok::INT, "5"}};
+	    Token{Tok::GT, ">"},	Token{Tok::INT, "5"}, Token{Tok::SEMICOLON, ";"}, Token{Tok::EOF_MARK, ""}};
 	Lexer lexer(input);
 	for (const Token &token : tests) {
 		Token current_token = lexer.nextToken();
@@ -101,6 +103,37 @@ void test_three() {
 				      std::string{token.literal}});
 		ASSERT_EQ(token.type, current_token.type,
 			  std::string{std::string{"Test 3 type: "} +
+				      std::string{token.type}});
+	}
+}
+
+void test_four() {
+	using namespace Lex;
+	std::string input = R""""(
+	if (5 < 10) {
+		return true;
+	} else {
+		return false;
+	}
+	)"""";
+	std::vector<Token> tests = {
+	    Token{Tok::IF, "if"},	Token{Tok::LPAREN, "("},
+	    Token{Tok::INT, "5"},	Token{Tok::LT, "<"},
+	    Token{Tok::INT, "10"},	Token{Tok::RPAREN, ")"},
+	    Token{Tok::LBRACE, "{"},	Token{Tok::RETURN, "return"},
+	    Token{Tok::TRUE, "true"},	Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::RBRACE, "}"},	Token{Tok::ELSE, "else"},
+	    Token{Tok::LBRACE, "{"},	Token{Tok::RETURN, "return"},
+	    Token{Tok::FALSE, "false"}, Token{Tok::SEMICOLON, ";"},
+	    Token{Tok::RBRACE, "}"}, Token{Tok::EOF_MARK, ""}};
+	Lexer lexer(input);
+	for (const Token &token : tests) {
+		Token current_token = lexer.nextToken();
+		ASSERT_EQ(token.literal, current_token.literal,
+			  std::string{std::string{"Test 4 literal: "} +
+				      std::string{token.literal}});
+		ASSERT_EQ(token.type, current_token.type,
+			  std::string{std::string{"Test 4 type: "} +
 				      std::string{token.type}});
 	}
 }

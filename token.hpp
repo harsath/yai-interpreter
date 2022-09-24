@@ -30,10 +30,15 @@ const std::string LBRACE = "{";
 const std::string RBRACE = "}";
 
 // Keywords
-const std::string FUNCTION = "fn";
-const std::string LET = "let";
+const std::string FUNCTION = "FUNCTION";
+const std::string LET = "LET";
+const std::string IF = "IF";
+const std::string ELSE = "ELSE";
+const std::string RETURN = "RETURN";
+const std::string TRUE = "TRUE";
+const std::string FALSE = "FALSE";
 
 const std::unordered_map<std::string, std::string> keywords = {
-	{"fn", FUNCTION}, {"let", LET}
-};
+    {"fn", FUNCTION}, {"let", LET},   {"true", TRUE},	 {"false", FALSE},
+    {"if", IF},	      {"else", ELSE}, {"return", RETURN}};
 } // namespace Tok
