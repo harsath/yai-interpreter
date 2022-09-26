@@ -19,6 +19,8 @@ const std::string ASTERISK = "*";
 const std::string SLASH = "/";
 const std::string LT = "<";
 const std::string GT = ">";
+const std::string EQ = "==";
+const std::string NOT_EQ = "!=";
 
 // Delimiters
 const std::string COMMA = ",";

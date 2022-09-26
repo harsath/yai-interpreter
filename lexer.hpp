@@ -18,6 +18,7 @@ class Token {
 	Token(const Token &input_token);
 	Token &operator=(const Token &input_token);
 	Token();
+	friend std::ostream &operator<<(std::ostream &os, const Token &token);
 };
 
 Token::Token(TokenType input_type, std::string input_literal)
@@ -32,6 +33,11 @@ Token &Token::operator=(const Token &input_token) {
 	this->type = input_token.type;
 	this->literal = input_token.literal;
 	return *this;
+}
+
+std::ostream &operator<<(std::ostream &os, const Token &token) {
+	os << "{Type:" << token.type << " Literal:" << token.literal << "}";
+	return os;
 }
 
 class Lexer {
@@ -49,6 +55,7 @@ class Lexer {
 	std::string readIdentifier();
 	std::string readNumber();
 	void skipWhitespace();
+	char peekChar();
 };
 
 Lexer::Lexer(std::string input_string)
@@ -56,7 +63,7 @@ Lexer::Lexer(std::string input_string)
 	this->readChar();
 }
 void Lexer::readChar() {
-	if (this->readPosition >= input.length()) {
+	if (this->readPosition >= this->input.length()) {
 		this->ch = 0;
 	} else {
 		this->ch = this->input[this->readPosition];
@@ -65,12 +72,25 @@ void Lexer::readChar() {
 	this->readPosition++;
 }
 
+char Lexer::peekChar() {
+	if (this->readPosition >= this->input.length()) {
+		return 0;
+	} else {
+		return this->input[this->readPosition];
+	}
+}
+
 Token Lexer::nextToken() {
 	Token tok;
 	this->skipWhitespace();
 	switch (this->ch) {
 	case '=':
-		tok = Token{Tok::ASSIGN, std::string{this->ch}};
+		if (this->peekChar() == '=') {
+			tok = Token{Tok::EQ, "=="};
+			this->readChar();
+		} else {
+			tok = Token{Tok::ASSIGN, std::string{this->ch}};
+		}
 		this->readChar();
 		break;
 	case ';':
@@ -98,7 +118,12 @@ Token Lexer::nextToken() {
 		this->readChar();
 		break;
 	case '!':
-		tok = Token{Tok::BANG, std::string{this->ch}};
+		if (this->peekChar() == '=') {
+			tok = Token{Tok::NOT_EQ, "!="};
+			this->readChar();
+		} else {
+			tok = Token{Tok::BANG, std::string{this->ch}};
+		}
 		this->readChar();
 		break;
 	case '*':
