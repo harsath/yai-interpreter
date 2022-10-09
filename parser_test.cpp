@@ -1,8 +1,8 @@
+#include "ast.hpp"
+#include "parser.hpp"
+#include "test_helper.hpp"
 #include <string>
 #include <vector>
-#include "test_helper.hpp"
-#include "parser.hpp"
-#include "ast.hpp"
 
 void test_let_statement();
 void _test_let_statement(std::shared_ptr<Ast::Statement>, std::string);
@@ -24,18 +24,23 @@ void test_let_statement() {
 	Parser::Parser p(l);
 	std::shared_ptr<Ast::Program> program = p.parseProgram();
 	ASSERT_TRUE(program != nullptr, "parseProgram() returned nullptr");
-	ASSERT_TRUE(program->statements.size() == 3, "program.statements does not contain 3 statements.");
+	ASSERT_TRUE(program->statements.size() == 3,
+		    "program.statements does not contain 3 statements.");
 	std::vector<std::string> tests = {"x", "y", "foobar"};
 	size_t i = 0;
 	for (const std::string &test : tests) {
-		std::shared_ptr<Ast::Statement> stmt = program->statements.at(i);
+		std::shared_ptr<Ast::Statement> stmt =
+		    program->statements.at(i);
 		_test_let_statement(stmt, test);
+		i++;
 	}
 }
 
 void _test_let_statement(std::shared_ptr<Ast::Statement> s, std::string name) {
-	ASSERT_TRUE(s->tokenLiteral() == "let", "statement.tokenLiteral is not 'let'");
-	std::shared_ptr<Ast::LetStatement> let_stmt = std::static_pointer_cast<Ast::LetStatement>(s);
-	PRINTD("tokenLiteral() = " << let_stmt->name->tokenLiteral() << ", name = " << name)
-	ASSERT_TRUE(let_stmt->name->tokenLiteral() == name, "let_stmt.name.tokenLiteral() does not match `name`");
+	ASSERT_TRUE(s->tokenLiteral() == "let",
+		    "statement.tokenLiteral is not 'let'");
+	std::shared_ptr<Ast::LetStatement> let_stmt =
+	    std::static_pointer_cast<Ast::LetStatement>(s);
+	ASSERT_TRUE(let_stmt->name->tokenLiteral() == name,
+		    "let_stmt.name.tokenLiteral() does not match `name`");
 }
