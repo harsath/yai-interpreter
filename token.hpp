@@ -43,4 +43,107 @@ const std::string FALSE = "FALSE";
 const std::unordered_map<std::string, std::string> keywords = {
     {"fn", FUNCTION}, {"let", LET},   {"true", TRUE},	 {"false", FALSE},
     {"if", IF},	      {"else", ELSE}, {"return", RETURN}};
+
+enum class EnumToken {
+	ILLEGAL,
+	EOF_MARK,
+
+	IDENT,
+	INT,
+
+	ASSIGN,
+	PLUS,
+	MINUS,
+	BANG,
+	ASTERISK,
+	SLASH,
+	LT,
+	GT,
+	EQ,
+	NOT_EQ,
+
+	COMMA,
+	SEMICOLON,
+
+	LPAREN,
+	RPAREN,
+	LBRACE,
+	RBRACE,
+
+	FUNCTION,
+	LET,
+	IF,
+	ELSE,
+	RETURN,
+	TRUE,
+	FALSE
+};
+
+const std::unordered_map<EnumToken, std::string> EnumToString = {
+    {EnumToken::ILLEGAL, ILLEGAL},
+    {EnumToken::EOF_MARK, EOF_MARK},
+
+    {EnumToken::IDENT, IDENT},
+    {EnumToken::INT, INT},
+
+    {EnumToken::ASSIGN, ASSIGN},
+    {EnumToken::PLUS, PLUS},
+    {EnumToken::MINUS, MINUS},
+    {EnumToken::BANG, BANG},
+    {EnumToken::ASTERISK, ASTERISK},
+    {EnumToken::SLASH, SLASH},
+    {EnumToken::LT, LT},
+    {EnumToken::GT, GT},
+    {EnumToken::EQ, EQ},
+    {EnumToken::NOT_EQ, NOT_EQ},
+
+    {EnumToken::COMMA, COMMA},
+    {EnumToken::SEMICOLON, SEMICOLON},
+
+    {EnumToken::LPAREN, LPAREN},
+    {EnumToken::RPAREN, RPAREN},
+    {EnumToken::LBRACE, LBRACE},
+    {EnumToken::RBRACE, RBRACE},
+
+    {EnumToken::FUNCTION, FUNCTION},
+    {EnumToken::LET, LET},
+    {EnumToken::IF, IF},
+    {EnumToken::ELSE, ELSE},
+    {EnumToken::RETURN, RETURN},
+    {EnumToken::TRUE, TRUE},
+    {EnumToken::FALSE, FALSE}};
+
+const std::unordered_map<std::string, EnumToken> StringToEnum = {
+    {ILLEGAL, EnumToken::ILLEGAL},
+    {EOF_MARK, EnumToken::EOF_MARK},
+
+    {IDENT, EnumToken::IDENT},
+    {INT, EnumToken::INT},
+
+    {ASSIGN, EnumToken::ASSIGN},
+    {PLUS, EnumToken::PLUS},
+    {MINUS, EnumToken::MINUS},
+    {BANG, EnumToken::BANG},
+    {ASTERISK, EnumToken::ASTERISK},
+    {SLASH, EnumToken::SLASH},
+    {LT, EnumToken::LT},
+    {GT, EnumToken::GT},
+    {EQ, EnumToken::EQ},
+    {NOT_EQ, EnumToken::NOT_EQ},
+
+    {COMMA, EnumToken::COMMA},
+    {SEMICOLON, EnumToken::SEMICOLON},
+
+    {LPAREN, EnumToken::LPAREN},
+    {RPAREN, EnumToken::RPAREN},
+    {LBRACE, EnumToken::LBRACE},
+    {RBRACE, EnumToken::RBRACE},
+
+    {FUNCTION, EnumToken::FUNCTION},
+    {LET, EnumToken::LET},
+    {IF, EnumToken::IF},
+    {ELSE, EnumToken::ELSE},
+    {RETURN, EnumToken::RETURN},
+    {TRUE, EnumToken::TRUE},
+    {FALSE, EnumToken::FALSE}};
 } // namespace Tok
