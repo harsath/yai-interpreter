@@ -2,6 +2,8 @@
 #include <string>
 #include <unordered_map>
 
+#define PRINTD(arg) std::cout << arg << std::endl;
+
 namespace Tok {
 const std::string ILLEGAL = "ILLEGAL";
 const std::string EOF_MARK = "";
