@@ -9,14 +9,19 @@ class Parser {
 	std::shared_ptr<Lex::Lexer> l;
 	Lex::Token curToken;
 	Lex::Token peekToken;
+	std::vector<std::string> errors_list;
 	Parser(std::shared_ptr<Lex::Lexer> l);
-	void nextToken();
 	std::shared_ptr<Ast::Program> parseProgram();
+	const std::vector<std::string> &errors();
+
+      private:
+	void nextToken();
 	std::shared_ptr<Ast::Statement> parseStatement();
 	std::shared_ptr<Ast::LetStatement> parseLetStatement();
 	bool curTokenIs(Lex::TokenType);
 	bool peekTokenIs(Lex::TokenType);
 	bool expectedPeek(Lex::TokenType);
+	void peekError(Lex::TokenType);
 };
 Parser::Parser(std::shared_ptr<Lex::Lexer> l) {
 	this->l = l;
@@ -28,6 +33,12 @@ Parser::Parser(std::shared_ptr<Lex::Lexer> l) {
 void Parser::nextToken() {
 	this->curToken = this->peekToken;
 	this->peekToken = this->l->nextToken();
+}
+const std::vector<std::string> &Parser::errors() { return this->errors_list; }
+void Parser::peekError(Lex::TokenType type) {
+	std::string message = "expected next token to be " + type +
+			      ", but got " + this->peekToken.type + " instead";
+	this->errors_list.emplace_back(std::move(message));
 }
 std::shared_ptr<Ast::Program> Parser::parseProgram() {
 	std::shared_ptr<Ast::Program> program =
@@ -74,6 +85,7 @@ bool Parser::expectedPeek(Lex::TokenType type) {
 		this->nextToken();
 		return true;
 	} else {
+		this->peekError(type);
 		return false;
 	}
 }
