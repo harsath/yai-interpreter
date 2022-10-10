@@ -18,6 +18,7 @@ class Parser {
 	void nextToken();
 	std::shared_ptr<Ast::Statement> parseStatement();
 	std::shared_ptr<Ast::LetStatement> parseLetStatement();
+	std::shared_ptr<Ast::ReturnStatement> parseReturnStatement();
 	bool curTokenIs(Lex::TokenType);
 	bool peekTokenIs(Lex::TokenType);
 	bool expectedPeek(Lex::TokenType);
@@ -54,6 +55,8 @@ std::shared_ptr<Ast::Statement> Parser::parseStatement() {
 	switch (Tok::StringToEnum.at(this->curToken.type)) {
 	case Tok::EnumToken::LET:
 		return this->parseLetStatement();
+	case Tok::EnumToken::RETURN:
+		return this->parseReturnStatement();
 	default:
 		return nullptr;
 	}
@@ -70,9 +73,19 @@ std::shared_ptr<Ast::LetStatement> Parser::parseLetStatement() {
 	let_stmt->name->token = this->curToken;
 
 	// TODO: We're skipping the expression until semicolon
-	while (this->curTokenIs(Tok::SEMICOLON)) { this->nextToken(); }
+	while (!this->curTokenIs(Tok::SEMICOLON)) { this->nextToken(); }
 
 	return let_stmt;
+}
+std::shared_ptr<Ast::ReturnStatement> Parser::parseReturnStatement() {
+	std::shared_ptr<Ast::ReturnStatement> return_stmt =
+	    std::make_shared<Ast::ReturnStatement>();
+	return_stmt->token = this->curToken;
+	this->nextToken();
+
+	// TODO: We're skipping the expression until semicolon
+	while (!this->curTokenIs(Tok::SEMICOLON)) { this->nextToken(); }
+	return return_stmt;
 }
 bool Parser::curTokenIs(Lex::TokenType type) {
 	return (this->curToken.type == type);

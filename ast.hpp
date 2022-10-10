@@ -43,6 +43,7 @@ class Identifier : public Expression {
 };
 
 class LetStatement : public Statement {
+      // let IDENTIFIER = EXPRESSION;
       public:
 	Lex::Token token; // LET token
 	std::shared_ptr<Identifier> name;
@@ -51,5 +52,16 @@ class LetStatement : public Statement {
 	std::string tokenLiteral() override {
 		return this->token.literal; 
 	}
+};
+
+class ReturnStatement : public Statement {
+	// return EXPRESSION;
+	public:
+		Lex::Token token; // RETURN token
+		std::shared_ptr<Expression> return_value;
+		void statementNode() override {}
+		std::string tokenLiteral() override {
+			return this->token.literal;
+		}
 };
 } // namespace Ast

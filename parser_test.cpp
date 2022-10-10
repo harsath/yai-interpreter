@@ -5,23 +5,24 @@
 #include <vector>
 
 void test_let_statement();
+void test_return_statement();
 void _test_let_statement(std::shared_ptr<Ast::Statement>, std::string);
 void _check_parser_errors(std::shared_ptr<Parser::Parser>);
 
 int main(int argc, const char *argv[]) {
 	test_let_statement();
+	test_return_statement();
 
 	return 0;
 }
 
 void test_let_statement() {
-	using namespace Lex;
 	std::string input = R""""(
 	let x = 5;
 	let y = 10;
 	let foobar = 838383;
 	)"""";
-	std::shared_ptr<Lexer> l = std::make_shared<Lexer>(input);
+	std::shared_ptr<Lex::Lexer> l = std::make_shared<Lex::Lexer>(input);
 	std::shared_ptr<Parser::Parser> p = std::make_shared<Parser::Parser>(l);
 	std::shared_ptr<Ast::Program> program = p->parseProgram();
 	_check_parser_errors(p);
@@ -45,6 +46,26 @@ void _test_let_statement(std::shared_ptr<Ast::Statement> s, std::string name) {
 	    std::static_pointer_cast<Ast::LetStatement>(s);
 	ASSERT_TRUE(let_stmt->name->tokenLiteral() == name,
 		    "let_stmt.name.tokenLiteral() does not match `name`");
+}
+
+void test_return_statement() {
+	std::string input = R""""(
+	return 5;
+	return 10;
+	return 99999923;
+	)"""";
+	std::shared_ptr<Lex::Lexer> l = std::make_shared<Lex::Lexer>(input);
+	std::shared_ptr<Parser::Parser> p = std::make_shared<Parser::Parser>(l);
+	std::shared_ptr<Ast::Program> program = p->parseProgram();
+	_check_parser_errors(p);
+	ASSERT_TRUE(program != nullptr, "parseProgram() returned nullptr");
+	ASSERT_TRUE(program->statements.size() == 3,
+		    "program.statements does not contain 3 statements.");
+	for (std::shared_ptr<Ast::Statement> statement : program->statements) {
+		ASSERT_TRUE(
+		    statement->tokenLiteral() == "return",
+		    "statement->tokenLiteral() is not of type Tok::RETURN");
+	}
 }
 
 void _check_parser_errors(std::shared_ptr<Parser::Parser> parser) {
