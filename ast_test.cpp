@@ -21,5 +21,5 @@ void test_string() {
 	value_tmp->token = Lex::Token(Tok::IDENT, "another_var");
 	let_stmt_tmp->value = value_tmp;
 	program->statements.push_back(let_stmt_tmp);
-	ASSERT_TRUE(program->statements.at(0)->string() == "let my_var = another_var;", "variable names doesn't match");
+	ASSERT_TRUE(program->statements.at(0)->string() == "let my_var = another_var;", "let statement doesn't match AST generated one");
 }
