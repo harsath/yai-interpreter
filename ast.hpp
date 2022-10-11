@@ -62,7 +62,7 @@ class LetStatement : public Statement {
 		std::string returner;
 		returner += this->token.literal + " ";
 		returner += this->name->string() + " = ";
-		if (this->value != nullptr) { this->value->string(); }
+		if (this->value != nullptr) { returner += this->value->string(); }
 		returner += ";";
 		return returner;
 	}
@@ -97,6 +97,7 @@ class ExpressionStatement : public Statement {
 		if (this->expression != nullptr) {
 			returner += this->expression->string();
 		}
+		return returner;
 	}
 };
 } // namespace Ast
