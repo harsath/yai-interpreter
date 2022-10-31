@@ -1,0 +1,7 @@
+set(LEXER_TEST_BIN lexer_test)
+set(PARSER_TEST_BIN parser_test)
+set(AST_TEST_BIN ast_test)
+include_directories(../src/)
+add_executable(${LEXER_TEST_BIN} lexer_test.cpp)
+add_executable(${PARSER_TEST_BIN} parser_test.cpp)
+add_executable(${AST_TEST_BIN} ast_test.cpp)
