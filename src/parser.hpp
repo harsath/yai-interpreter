@@ -2,17 +2,27 @@
 #include "ast.hpp"
 #include "lexer.hpp"
 #include "token.hpp"
+#include <functional>
 
 namespace Parser {
+using PrefixParseFunctionType = std::function<Ast::Expression()>;
+using InfixParseFunctionType = std::function<Ast::Expression(Ast::Expression)>;
 class Parser {
       public:
 	std::shared_ptr<Lex::Lexer> l;
 	Lex::Token curToken;
 	Lex::Token peekToken;
-	std::vector<std::string> errors_list;
+	std::vector<std::string> errorList;
+	std::unordered_map<Lex::TokenType, PrefixParseFunctionType>
+	    prefixParseFunctions;
+	std::unordered_map<Lex::TokenType, InfixParseFunctionType>
+	    infixParseFunctions;
+
 	Parser(std::shared_ptr<Lex::Lexer> l);
 	std::shared_ptr<Ast::Program> parseProgram();
 	const std::vector<std::string> &errors();
+	void registerPrefix(Lex::TokenType, PrefixParseFunctionType);
+	void registerInfix(Lex::TokenType, InfixParseFunctionType);
 
       private:
 	void nextToken();
@@ -35,11 +45,11 @@ void Parser::nextToken() {
 	this->curToken = this->peekToken;
 	this->peekToken = this->l->nextToken();
 }
-const std::vector<std::string> &Parser::errors() { return this->errors_list; }
+const std::vector<std::string> &Parser::errors() { return this->errorList; }
 void Parser::peekError(Lex::TokenType type) {
 	std::string message = "expected next token to be " + type +
 			      ", but got " + this->peekToken.type + " instead";
-	this->errors_list.emplace_back(std::move(message));
+	this->errorList.emplace_back(std::move(message));
 }
 std::shared_ptr<Ast::Program> Parser::parseProgram() {
 	std::shared_ptr<Ast::Program> program =
@@ -101,5 +111,13 @@ bool Parser::expectedPeek(Lex::TokenType type) {
 		this->peekError(type);
 		return false;
 	}
+}
+void Parser::registerPrefix(Lex::TokenType token_type,
+			    PrefixParseFunctionType fn) {
+	this->prefixParseFunctions[token_type] = fn;
+}
+void Parser::registerInfix(Lex::TokenType token_type,
+			   InfixParseFunctionType fn) {
+	this->infixParseFunctions[token_type] = fn;
 }
 } // namespace Parser

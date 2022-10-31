@@ -19,7 +19,9 @@ class Statement : public Node {
 
 class Expression : public Node {
       public:
-	virtual void expressionNode() = 0;
+	virtual void expressionNode() {}
+	virtual std::string tokenLiteral() override {}
+	virtual std::string string() override {}
 };
 
 // This node is going to be root node of every AST our parser produces
@@ -62,7 +64,9 @@ class LetStatement : public Statement {
 		std::string returner;
 		returner += this->token.literal + " ";
 		returner += this->name->string() + " = ";
-		if (this->value != nullptr) { returner += this->value->string(); }
+		if (this->value != nullptr) {
+			returner += this->value->string();
+		}
 		returner += ";";
 		return returner;
 	}
